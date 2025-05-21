@@ -6,7 +6,8 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 
 const {mongo_url,JWT_USER_SECRET}= require("./config")
-const {userModel, postModel }= require("./models/db");
+const {userModel}= require("./models/user");
+const {postModel} = require("./models/post");
 
 const app = express();
 
@@ -17,9 +18,9 @@ app.set("view engine","ejs");
 
 
 function isLoggedIn(req,res,next){
-   if(req.cookie.token==="")res.redirect("/login");
+   if(req.cookies.token==="")res.redirect("/login");
    else{
-      const data = jwt.verify(req.cookie.token,JWT_USER_SECRET);
+      const data = jwt.verify(req.cookies.token,JWT_USER_SECRET);
       req.userId = data.userId;
       next();
    } 
@@ -31,12 +32,13 @@ app.get("/",(req,res)=>{
 
 // user can register their account
 app.post("/register",async (req,res)=>{
-   const {email,name,password , age }= req.body;
+   let {email,name,password , age }= req.body;
+   age = parseInt(age);
    const requiredBody = zod.object({
       name :zod.string(),
-      email:zod.email(),
+      email:zod.string(),
       password:zod.string().min(4).max(8),
-      age:zod.number()
+      age:zod.coerce.number()
    })
    const {success,error} = requiredBody.safeParse(req.body);
    if(error){
@@ -73,10 +75,8 @@ app.get("/login",(req,res)=>{
 app.post("/login",async (req,res)=>{
    const {email, password} = req.body;
    const requiredBody = zod.object({
-      name:zod.string(),
-      email:zod.email(),
-      password:zod.string().min(3).max(8),
-      age:zod.number()
+      email:zod.string(),
+      password:zod.string().min(4).max(8)
    })
    const {success,error}= requiredBody.safeParse(req.body);
    if(error){
@@ -85,34 +85,40 @@ app.post("/login",async (req,res)=>{
          err:error
       })
    }
+   console.log(error);
+   
    try{
-      const user = userModel.findOne({
+      const user = await userModel.findOne({
          email
       })
-      const passwordMatched = await bcrypt.compare(user.password,password);
+      const passwordMatched = await bcrypt.compare(password,user.password);
+      console.log(passwordMatched);
+      
       if(passwordMatched){
          const token = jwt.sign({
             userId :user._id
          },JWT_USER_SECRET);
          res.cookie("token",token);
          res.redirect("/profile");
-         res.send({
-            msg:"you logged in !!",
-            token
-         })
+         // res.send({
+         //    msg:"you logged in !!",
+         //    token
+         // })
       }
       else{
          res.redirect("/login")
-         res.send({
-            msg:"wrong password !!"
-         })
+         // res.send({
+         //    msg:"wrong password !!"
+         // })
       }
    }
    catch(err){
+      console.log("in catch");
+      
       res.redirect("/login");
-      res.send({
-         msg:"user not found with this email and password !!"
-      })
+      // res.send({
+      //    msg:"user not found with this email and password !!"
+      // })
    }
 })
 
@@ -128,7 +134,7 @@ app.get("/profile",isLoggedIn,async(req,res)=>{
       _id:req.userId
    }).populate("posts");
 
-   res.render("profile",{user:user});
+   res.render("profile",{user:user}); 
 })
 
 app.post("/post",isLoggedIn,async (req,res)=>{
@@ -147,7 +153,7 @@ app.post("/post",isLoggedIn,async (req,res)=>{
 
 })
 
-app.get("/likes/:postId",isLoggedIn,async (req,res)=>{
+app.get("/like/:postId",isLoggedIn,async (req,res)=>{
    const posts = await postModel.findOne({
       _id:req.params.postId
    }).populate("user");
@@ -163,7 +169,7 @@ app.get("/likes/:postId",isLoggedIn,async (req,res)=>{
 })
 connectToMongo();
 async function connectToMongo(){
-   // await mongoose.connect(mongo_url);
+   await mongoose.connect(mongo_url);
    app.listen(3000,()=>{
       console.log("connecting to server 3000..");
    })

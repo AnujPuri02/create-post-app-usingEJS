@@ -6,7 +6,7 @@
     <title>profile page </title>
 </head>
 <body>
-    <h2>welcome <% = user.name %></h2>
+    <h2>welcome <%= user.name %></h2>
 
     <a href="/logout">logout</a>
     <div>
@@ -18,15 +18,19 @@
     <main>
         <p>My post </p>
         <div>
-            <% user.posts.forEach(post=>{ %>
+            <% if(user.posts.length>0){ %>
+                <% user.posts.forEach(post=>{ %>
                 <p><%= user.name %></p>
                 <p><%= post.content %></p>
                 <small><%= post.likes.length %></small>
-                <a href="/like/<%=post._id %>">
-                    <% if(post.likes.indexOf(user._id))? "Unlike" :"like" %>
+                <a href="/like/<%= post._id %>">
+                    <%= post.likes.indexOf(user._id) !==-1? "Unlike" :"like" %>
                 </a>
                 <a href="">readmore</a>
-            <% }) %>
+                <% }) %>
+            <% } else { %>
+                <p>There is not any posts yet ..</p>
+            <% } %> 
         </div>
     </main>
 </body>

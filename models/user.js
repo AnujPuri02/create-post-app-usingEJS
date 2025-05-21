@@ -14,33 +14,15 @@ const userSchema = new schema({
     posts:[
         {
             type:objectId,
-            ref:"postSchema"
+            ref:"post"
         }
     ]
 })
 
-const postSchema = new schema({
-    content:{
-        type:String,
-    },
-    likes:[{
-        type:objectId,
-        ref:"userSchema"
-    }],
-    time:{
-        type:Date,
-        default:Date.now
-    },
-    user:{
-        type:objectId,
-        ref:"userSchema"
-    }
-})
+
 
 const userModel = mongoose.model("user",userSchema);
-const postModel = mongoose.model("post",postSchema);
 
 module.exports={
-    userModel,
-    postModel
+    userModel
 }
