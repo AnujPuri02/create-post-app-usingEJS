@@ -9,6 +9,7 @@
     <h2>welcome <%= user.name %></h2>
 
     <a href="/logout">logout</a>
+    <a href="/profile/uploads"><img width="40px" height="40px" style="background-position: center;overflow: hidden;background-size: contain;" src="/images/uploads/<%= user.profilepic %>" alt="" ></a>
     <div>
         <form action="/post" method="post">
             <textarea name="content" id="" placeholder="about post "></textarea>
@@ -16,10 +17,10 @@
         </form>
     </div>
     <main>
-        <p>My post </p>
+        <p><s>My</s>All post </p>
         <div>
-            <% if(user.posts.length>0){ %>
-                <% user.posts.forEach(post=>{ %>
+            <% if(allposts.length>0){ %>
+                <% allposts.forEach(post=>{ %>
                 <p><%= user.name %></p>
                 <p><%= post.content %></p>
                 <small><%= post.likes.length %></small>

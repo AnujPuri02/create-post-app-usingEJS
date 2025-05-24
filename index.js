@@ -4,10 +4,12 @@ const bcrypt =  require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
+const path = require("path");
 
 const {mongo_url,JWT_USER_SECRET}= require("./config")
 const {userModel}= require("./models/user");
 const {postModel} = require("./models/post");
+const {uploads} = require("./config");
 
 const app = express();
 
@@ -15,6 +17,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded());
 app.set("view engine","ejs");
+app.use(express.static(path.join(__dirname,"/public")));
 
 
 function isLoggedIn(req,res,next){
@@ -28,6 +31,21 @@ function isLoggedIn(req,res,next){
 
 app.get("/",(req,res)=>{
    res.render("register");
+})
+
+// profile uploads page 
+app.get("/profile/uploads",(req,res)=>{
+   res.render("profileupload");
+})
+
+// store profile pic in database and render it 
+app.post("/uploads",isLoggedIn,uploads.single("image"), async(req,res)=>{
+   const user = await userModel.findOne({
+      _id:req.userId
+   });
+   user.profilepic= req.file.filename;
+   await user.save();
+   res.redirect("/profile");
 })
 
 // user can register their account
@@ -55,6 +73,7 @@ app.post("/register",async (req,res)=>{
          password:hashedPass,
          age
       })
+      res.redirect("/login")
       res.send({
          msg:"you signed up successfully !!"
       })
@@ -133,8 +152,11 @@ app.get("/profile",isLoggedIn,async(req,res)=>{
    const user = await userModel.findOne({
       _id:req.userId
    }).populate("posts");
+   const allPosts = await postModel.find({
 
-   res.render("profile",{user:user}); 
+   });
+
+   res.render("profile",{user:user,allposts:allPosts}); 
 })
 
 app.post("/post",isLoggedIn,async (req,res)=>{

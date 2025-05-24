@@ -11,6 +11,10 @@ const userSchema = new schema({
     },
     password : String,
     age :Number,
+    profilepic:{
+        type:String,
+        default:"default.png"
+    },
     posts:[
         {
             type:objectId,
