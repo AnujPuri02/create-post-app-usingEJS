@@ -1,38 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>profile page </title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h2>welcome <%= user.name %></h2>
+<body class="bg-gray-100 min-h-screen font-sans">
+  <div class="max-w-4xl mx-auto py-8 px-4">
 
-    <a href="/logout">logout</a>
-    <a href="/profile/uploads"><img width="40px" height="40px" style="background-position: center;overflow: hidden;background-size: contain;" src="/images/uploads/<%= user.profilepic %>" alt="" ></a>
-    <div>
-        <form action="/post" method="post">
-            <textarea name="content" id="" placeholder="about post "></textarea>
-            <input type="submit" value="create post">
-        </form>
+    <!-- Welcome Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-semibold text-gray-800">
+        Welcome, <%= user.name %>
+      </h2>
+
+      <!-- Profile and Logout -->
+      <div class="flex items-center space-x-4">
+        <a href="/logout" class="text-red-600 hover:underline">Logout</a>
+        <a href="/profile/uploads" class="block w-10 h-10 overflow-hidden rounded-full border-2 border-gray-300">
+          <img src="/images/uploads/<%= user.profilepic %>" alt="Profile" class="object-cover w-full h-full"/>
+        </a>
+      </div>
     </div>
-    <main>
-        <p><s>My</s>All post </p>
+
+    <!-- Post Creation Form -->
+    <div class="bg-white p-4 rounded shadow mb-6">
+      <form action="/post" method="post" class="space-y-4">
+        <textarea
+          name="content"
+          rows="3"
+          placeholder="What's on your mind?"
+          class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        ></textarea>
         <div>
-            <% if(allposts.length>0){ %>
-                <% allposts.forEach(post=>{ %>
-                <p><%= user.name %></p>
-                <p><%= post.content %></p>
-                <small><%= post.likes.length %></small>
-                <a href="/like/<%= post._id %>">
-                    <%= post.likes.indexOf(user._id) !==-1? "Unlike" :"like" %>
-                </a>
-                <a href="">readmore</a>
-                <% }) %>
-            <% } else { %>
-                <p>There is not any posts yet ..</p>
-            <% } %> 
+          <input
+            type="submit"
+            value="Create Post"
+            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer"
+          />
         </div>
+      </form>
+    </div>
+
+    <!-- Posts Section -->
+    <main>
+      <h3 class="text-xl font-semibold mb-4 text-gray-700">All Posts</h3>
+
+      <div class="space-y-6">
+        <% if(allposts.length > 0) { %>
+          <% allposts.forEach(post => { %>
+            <div class="bg-white p-4 rounded shadow">
+              <p class="font-semibold text-gray-800 mb-1"><%= user.name %></p>
+              <p class="text-gray-700 mb-2"><%= post.content %></p>
+              <div class="flex items-center justify-between text-sm text-gray-500">
+                <span><%= post.likes.length %> likes</span>
+                <div class="space-x-4">
+                  <a href="/like/<%= post._id %>" class="text-blue-600 hover:underline">
+                    <%= post.likes.indexOf(user._id) !== -1 ? "Unlike" : "Like" %>
+                  </a>
+                  <a href="#" class="text-gray-600 hover:underline">Read more</a>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <p class="text-gray-600">There are no posts yet...</p>
+        <% } %>
+      </div>
     </main>
+
+  </div>
 </body>
 </html>

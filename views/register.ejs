@@ -1,22 +1,60 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sign up page </title>
+    <title>Sign Up Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h2>create account </h2>
-    <div>
-        <form action="/register" method="post">
-             <input type="text" name="name" id="" placeholder="name">
-             <input type="email" name="email" id="" placeholder="email">
-             <input type="password" name="password" id="" placeholder="password">
-             <input type="text" name="age" id="" placeholder="age">
-             <input type="submit"  value="create Account">
+<body class="bg-gray-100 min-h-screen font-sans flex items-center justify-center">
+
+    <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+        <!-- Sign-Up Header -->
+        <h2 class="text-2xl font-bold text-center text-gray-800">Create Account</h2>
+
+        <!-- Form -->
+        <form action="/register" method="post" class="space-y-4">
+            <!-- Name Input -->
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-600">Name</label>
+                <input type="text" name="name" id="name" placeholder="Enter your name"
+                    class="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <!-- Email Input -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-600">Email</label>
+                <input type="email" name="email" id="email" placeholder="Enter your email"
+                    class="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <!-- Password Input -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-600">Password</label>
+                <input type="password" name="password" id="password" placeholder="Enter your password"
+                    class="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <!-- Age Input -->
+            <div>
+                <label for="age" class="block text-sm font-medium text-gray-600">Age</label>
+                <input type="text" name="age" id="age" placeholder="Enter your age"
+                    class="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <!-- Submit Button -->
+            <div>
+                <input type="submit" value="Create Account"
+                    class="w-full py-2 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 cursor-pointer">
+            </div>
         </form>
-     </div>
-     <h2><a href="/login">Sign In</a></h2>
+
+        <!-- Sign In Link -->
+        <p class="text-center text-sm text-gray-600">
+            Already have an account? 
+            <a href="/login" class="text-blue-600 hover:underline">Sign In</a>
+        </p>
+    </div>
+
 </body>
 </html>
